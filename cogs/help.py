@@ -14,8 +14,11 @@ class menu(commands.Cog):
   embed.add_field(name='-fastbeige <resistance>', value='Display the best way for beige a enemy.', inline=True)
   embed.add_field(name='-remind <nation_id>', value='Set a reminder for a beige target.', inline=True)
   embed.add_field(name='-fastbeige <war_id>', value='Calculate the best attacks for beige a opponent.', inline=True)
+  embed.add_field(name='-spies <nation_id>', value='Display the total spies of a nation and odds for each operation.', inline=True)
+  embed.add_field(name='-value <resources>', value='Display the total value of the input resources.', inline=True)
   embed.add_field(name='-loot', value='Display loot commands information.', inline=True)
   embed.add_field(name='-raid', value='Display raid commands information.', inline=True)
+  embed.add_field(name='-damage', value='Display damage commands information.', inline=True)
   await ctx.send(embed=embed)
  @help.error
  async def help_error(self, ctx, error):
