@@ -1,4 +1,3 @@
-import random
 import sqlite3
 
 import discord
@@ -66,32 +65,25 @@ class Damage(commands.Cog):
       """
             r = requests.post(f"https://api.politicsandwar.com/graphql?api_key={api_key}", json={"query": query})
             data = r.json()["data"]["nations"]["data"]
-            infrastructure = 0
-            land = 0
             output = 0
             targets = ''
             for nations in data:
                 nat_id = nations['id']
                 nat_link = f'https://politicsandwar.com/nation/id={nat_id}'
                 nat_name = nations['nation_name']
-                cities = nations['num_cities']
-                population = nations['population']
                 aapos = nations['alliance_position']
                 color = nations['color']
                 vacmode = nations['vacation_mode_turns']
                 for city in nations['cities']:
-                    infrastructure += city['infrastructure']
-                    land += city['land']
-                    avg_infra = round(float(infrastructure / cities))
-                    pop_density = round(float(population / land))
-                    formula = round(
-                        min(random.uniform(300, max(350, pop_density * 3)), (avg_infra * 0.3 + 100), avg_infra), 1)
-                    inflict = avg_infra - formula
-                    r = requests.get(
-                        f"https://politicsandwar.com/city/estimate_infra_land_cost.php?q1={str(inflict)}&q2={str(avg_infra)}").text
-                    if aapos != 'APPLICANT' and color != 'beige' and vacmode == 0 and avg_infra >= 1500 and nat_name not in targets and output <= 4:
-                        output += 1
-                        targets += f'[{nat_name}]({nat_link}) - Estimated Damage : ${r}\n'
+                    infrastructure = city['infrastructure']
+                land = city['land']
+                formula = max(min((300 + max(350, infrastructure * 100 / land * 3)) / 2, infrastructure * 0.3 + 100), 0)
+                inflict = infrastructure - formula
+                r = requests.get(
+                    f"https://politicsandwar.com/city/estimate_infra_land_cost.php?q1={str(infrastructure - inflict)}&q2={str(inflict)}").text
+                if aapos != 'APPLICANT' and color != 'beige' and vacmode == 0 and output <= 9:
+                    output += 1
+                    targets += f'[{nat_name}]({nat_link}) - Estimated Damage : ${r}\n'
         if targets == '':
             await ctx.send('No targets has been found')
         else:
@@ -127,58 +119,52 @@ class Damage(commands.Cog):
         else:
             await ctx.send('Please wait...')
             query = f"""
-     {{
-      nations(first:50, alliance_id:{arg}, min_score:{minscore}, max_score:{maxscore}){{
-       data{{
-        id
-        nation_name
-        num_cities
-        population
-        alliance_position
-        color
-        vacation_mode_turns
-       cities{{
-        infrastructure
-        land
-       }}
-       }}
-       }}
-       }}
-      """
+        {{
+         nations(first:30, alliance_id:{arg}, min_score:{minscore}, max_score:{maxscore}){{
+          data{{
+           id
+           nation_name
+           num_cities
+           population
+           alliance_position
+           color
+           vacation_mode_turns
+          cities{{
+           infrastructure
+           land
+          }}
+          }}
+          }}
+          }}
+         """
             r = requests.post(f"https://api.politicsandwar.com/graphql?api_key={api_key}", json={"query": query})
             data = r.json()["data"]["nations"]["data"]
-            infrastructure = 0
-            land = 0
             output = 0
             targets = ''
             for nations in data:
                 nat_id = nations['id']
                 nat_link = f'https://politicsandwar.com/nation/id={nat_id}'
                 nat_name = nations['nation_name']
-                cities = nations['num_cities']
-                population = nations['population']
                 aapos = nations['alliance_position']
                 color = nations['color']
                 vacmode = nations['vacation_mode_turns']
                 for city in nations['cities']:
-                    infrastructure += city['infrastructure']
-                    land += city['land']
-                    avg_infra = round(float(infrastructure / cities))
-                    pop_density = round(float(population / land))
-                    formula = round(
-                        min(random.uniform(1700, max(2000, pop_density * 13.5)), (avg_infra * 0.8 + 150), avg_infra), 2)
-                    inflict = avg_infra - formula
-                    r = requests.get(
-                        f"https://politicsandwar.com/city/estimate_infra_land_cost.php?q1={str(inflict)}&q2={str(avg_infra)}").text
-                    if aapos != 'APPLICANT' and color != 'beige' and vacmode == 0 and avg_infra >= 1800 and nat_name not in targets and output <= 4:
-                        output += 1
-                        targets += f'[{nat_name}]({nat_link}) - Estimated Damage : ${r}\n'
-                if targets == '':
-                    await ctx.send('No targets has been found')
-                else:
-                    embed = discord.Embed(title="Missile Damage Targets", description=targets,
-                                          color=discord.Colour.from_rgb(58, 194, 243))
-                    await ctx.send(embed=embed)
+                    infrastructure = city['infrastructure']
+                land = city['land']
+                formula = max(
+                    min((1700 + max(2000, infrastructure * 100 / land * 13.5)) / 2, infrastructure * 0.8 + 150), 0)
+                inflict = infrastructure - formula
+                r = requests.get(
+                    f"https://politicsandwar.com/city/estimate_infra_land_cost.php?q1={str(infrastructure - inflict)}&q2={str(inflict)}").text
+                if aapos != 'APPLICANT' and color != 'beige' and vacmode == 0 and output <= 9:
+                    output += 1
+                    targets += f'[{nat_name}]({nat_link}) - Estimated Damage : ${r}\n'
+        if targets == '':
+            await ctx.send('No targets has been found')
+        else:
+            embed = discord.Embed(title="Nuke Damage Targets", description=targets,
+                                  color=discord.Colour.from_rgb(58, 194, 243))
+            await ctx.send(embed=embed)
 
     @nuke.error
     async def nuke_error(self, ctx, error):
