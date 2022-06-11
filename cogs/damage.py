@@ -26,6 +26,7 @@ class Damage(commands.Cog):
 
     @damage.command()
     async def missile(self, ctx, arg):
+        await ctx.message.delete()
         conn = sqlite3.connect('dbs/keystore.db')
         cur = conn.cursor()
         cur.execute(f'''SELECT owner_key FROM data WHERE guild_id = {ctx.guild.id}''')
@@ -74,16 +75,19 @@ class Damage(commands.Cog):
                 aapos = nations['alliance_position']
                 color = nations['color']
                 vacmode = nations['vacation_mode_turns']
-                for city in nations['cities']:
-                    infrastructure = city['infrastructure']
+                city = sorted(nations['cities'], key=lambda x: x['infrastructure'], reverse=True)[0]
+                infrastructure = city['infrastructure']
                 land = city['land']
                 formula = max(min((300 + max(350, infrastructure * 100 / land * 3)) / 2, infrastructure * 0.3 + 100), 0)
-                inflict = infrastructure - formula
                 r = requests.get(
-                    f"https://politicsandwar.com/city/estimate_infra_land_cost.php?q1={str(infrastructure - inflict)}&q2={str(inflict)}").text
+                    f"https://politicsandwar.com/city/estimate_infra_land_cost.php?q1={str(infrastructure)}&q2={str(formula)}").text
+                remove_this = ","
+                for rt in remove_this:
+                    r = r.replace(rt, "")
+                r2 = int(float(r))
                 if aapos != 'APPLICANT' and color != 'beige' and vacmode == 0 and output <= 9:
                     output += 1
-                    targets += f'[{nat_name}]({nat_link}) - Estimated Damage : ${r}\n'
+                    targets += f'[{nat_name}]({nat_link}) - Estimated Damage : ${r2}\n'
         if targets == '':
             await ctx.send('No targets has been found')
         else:
@@ -100,6 +104,7 @@ class Damage(commands.Cog):
 
     @damage.command()
     async def nuke(self, ctx, arg):
+        await ctx.message.delete()
         conn = sqlite3.connect('dbs/keystore.db')
         cur = conn.cursor()
         cur.execute(f'''SELECT owner_key FROM data WHERE guild_id = {ctx.guild.id}''')
@@ -153,9 +158,8 @@ class Damage(commands.Cog):
                 land = city['land']
                 formula = max(
                     min((1700 + max(2000, infrastructure * 100 / land * 13.5)) / 2, infrastructure * 0.8 + 150), 0)
-                inflict = infrastructure - formula
                 r = requests.get(
-                    f"https://politicsandwar.com/city/estimate_infra_land_cost.php?q1={str(infrastructure - inflict)}&q2={str(inflict)}").text
+                    f"https://politicsandwar.com/city/estimate_infra_land_cost.php?q1={str(infrastructure)}&q2={str(formula)}").text
                 if aapos != 'APPLICANT' and color != 'beige' and vacmode == 0 and output <= 9:
                     output += 1
                     targets += f'[{nat_name}]({nat_link}) - Estimated Damage : ${r}\n'
