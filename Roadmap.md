@@ -10,7 +10,7 @@ Reminder(List, Beige)
 Total Value {Partially done}
 Loot (Nation, Alliance)
 Raid (All, Safe, (Beige, All, Safe, Dnr) (Dnr, All, Safe))
-Damage (Missiles, Nukes) {Partially done}
+Damage (Missiles, Nukes) {Done}
 Spies (Odds, Total)
 
 # Optimal Code:
