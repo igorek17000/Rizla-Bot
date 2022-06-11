@@ -7,7 +7,7 @@ Me {Done}
 Sync (User) {Done}
 Fast Beige {Done}
 Reminder(List, Beige)
-Total Value {Partially done}
+Value {Done}
 Loot (Nation, Alliance)
 Raid (All, Safe, (Beige, All, Safe, Dnr) (Dnr, All, Safe))
 Damage (Missiles, Nukes) {Done}
