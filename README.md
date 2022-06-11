@@ -6,6 +6,8 @@ Rizla is a free-to-use Minimal Raiding Discord bot for Politics and War. Check o
 
 Rizla can be hosted everywhere! just make sure to set-up your projects like this repository.
 
+Also make sure to create correctly the databases with your data.
+
 # What about the future
 
-I will keep developing this bot until it will reach the perfection.
+I will keep developing bot for better performance and up-dating along with new commands.!
