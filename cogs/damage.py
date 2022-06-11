@@ -66,12 +66,7 @@ class Damage(commands.Cog):
       """
             r = requests.post(f"https://api.politicsandwar.com/graphql?api_key={api_key}", json={"query": query})
             data = r.json()["data"]["nations"]["data"]
-            output = 0
-            targets = ''
             for nations in data:
-                nat_id = nations['id']
-                nat_link = f'https://politicsandwar.com/nation/id={nat_id}'
-                nat_name = nations['nation_name']
                 aapos = nations['alliance_position']
                 color = nations['color']
                 vacmode = nations['vacation_mode_turns']
@@ -81,13 +76,19 @@ class Damage(commands.Cog):
                 formula = max(min((300 + max(350, infrastructure * 100 / land * 3)) / 2, infrastructure * 0.3 + 100), 0)
                 r = requests.get(
                     f"https://politicsandwar.com/city/estimate_infra_land_cost.php?q1={str(infrastructure)}&q2={str(formula)}").text
-                remove_this = ","
-                for rt in remove_this:
-                    r = r.replace(rt, "")
-                r2 = int(float(r))
-                if aapos != 'APPLICANT' and color != 'beige' and vacmode == 0 and output <= 9:
+                nations['r'] = float(r.replace(",", ""))
+            data = sorted(data, key=lambda x: x['r'], reverse=True)
+            output = 0
+            n = 0
+            targets = ""
+            while output < 10 and n < len(data):
+                nat_name = data[n]['nation_name']
+                nat_link = f'https://politicsandwar.com/nation/id={data[n]["id"]}'
+                r = data[n]['r']
+                if aapos != 'APPLICANT' and color != 'beige' and vacmode == 0:
+                    targets += f'[{nat_name}]({nat_link}) - Estimated Damage : ${r:,}\n'
                     output += 1
-                    targets += f'[{nat_name}]({nat_link}) - Estimated Damage : ${r2}\n'
+                n += 1
         if targets == '':
             await ctx.send('No targets has been found')
         else:
@@ -144,25 +145,30 @@ class Damage(commands.Cog):
          """
             r = requests.post(f"https://api.politicsandwar.com/graphql?api_key={api_key}", json={"query": query})
             data = r.json()["data"]["nations"]["data"]
-            output = 0
-            targets = ''
             for nations in data:
-                nat_id = nations['id']
-                nat_link = f'https://politicsandwar.com/nation/id={nat_id}'
-                nat_name = nations['nation_name']
                 aapos = nations['alliance_position']
                 color = nations['color']
                 vacmode = nations['vacation_mode_turns']
-                for city in nations['cities']:
-                    infrastructure = city['infrastructure']
+                city = sorted(nations['cities'], key=lambda x: x['infrastructure'], reverse=True)[0]
+                infrastructure = city['infrastructure']
                 land = city['land']
                 formula = max(
                     min((1700 + max(2000, infrastructure * 100 / land * 13.5)) / 2, infrastructure * 0.8 + 150), 0)
                 r = requests.get(
                     f"https://politicsandwar.com/city/estimate_infra_land_cost.php?q1={str(infrastructure)}&q2={str(formula)}").text
-                if aapos != 'APPLICANT' and color != 'beige' and vacmode == 0 and output <= 9:
+                nations['r'] = float(r.replace(",", ""))
+            data = sorted(data, key=lambda x: x['r'], reverse=True)
+            output = 0
+            n = 0
+            targets = ""
+            while output < 10 and n < len(data):
+                nat_name = data[n]['nation_name']
+                nat_link = f'https://politicsandwar.com/nation/id={data[n]["id"]}'
+                r = data[n]['r']
+                if aapos != 'APPLICANT' and color != 'beige' and vacmode == 0:
+                    targets += f'[{nat_name}]({nat_link}) - Estimated Damage : ${r:,}\n'
                     output += 1
-                    targets += f'[{nat_name}]({nat_link}) - Estimated Damage : ${r}\n'
+                n += 1
         if targets == '':
             await ctx.send('No targets has been found')
         else:
