@@ -81,7 +81,7 @@ class Damage(commands.Cog):
             output = 0
             n = 0
             targets = ""
-            while output < 10 and n < len(data):
+            while output < 20 and n < len(data):
                 nat_name = data[n]['nation_name']
                 nat_link = f'https://politicsandwar.com/nation/id={data[n]["id"]}'
                 r = data[n]['r']
@@ -161,7 +161,7 @@ class Damage(commands.Cog):
             output = 0
             n = 0
             targets = ""
-            while output < 10 and n < len(data):
+            while output < 20 and n < len(data):
                 nat_name = data[n]['nation_name']
                 nat_link = f'https://politicsandwar.com/nation/id={data[n]["id"]}'
                 r = data[n]['r']
