@@ -16,8 +16,6 @@ class Menu(commands.Cog):
         embed.add_field(name='-sync', value='Sync your nation information.', inline=True)
         embed.add_field(name='-fastbeige <resistance>', value='Display the best way for beige a enemy.', inline=True)
         embed.add_field(name='-remind <nation_id>', value='Set a reminder for a beige target.', inline=True)
-        embed.add_field(name='-fastbeige <war_id>', value='Calculate the best attacks for beige a opponent.',
-                        inline=True)
         embed.add_field(name='-spies <nation_id>',
                         value='Display the total spies of a nation and odds for each operation.', inline=True)
         embed.add_field(name='-value <resources>', value='Display the total value of the input resources.', inline=True)
