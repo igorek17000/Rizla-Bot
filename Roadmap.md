@@ -7,11 +7,11 @@ Me {Done}
 Sync (User) {Done}
 Fast Beige {Done}
 Reminder(List, Beige)
-Value {Done}
+Value {Simple, Advanced) {Done}
 Loot (Nation, Alliance)
 Raid (All, Safe, (Beige, All, Safe, Dnr) (Dnr, All, Safe))
 Damage (Missiles, Nukes) {Done}
-Spies (Odds, Total)
+Spies (Odds, Total) {Partially Done}
 
 # Optimal Code:
 
