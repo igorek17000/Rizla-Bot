@@ -56,9 +56,9 @@ class Spies(commands.Cog):
                 war_policy = nations['war_policy']
                 central_intelligence_agency = nations['central_intelligence_agency']
                 async with aiohttp.ClientSession() as session:
-                    if war_policy == "Arcane":
+                    if war_policy == "ARCANE":
                         percent = 57.5
-                    elif war_policy == "Tactician":
+                    elif war_policy == "TACTICIAN":
                         percent = 42.5
                     else:
                         percent = 50
@@ -121,9 +121,9 @@ class Spies(commands.Cog):
                 war_policy = nations['war_policy']
                 central_intelligence_agency = nations['central_intelligence_agency']
                 async with aiohttp.ClientSession() as session:
-                    if war_policy == "Arcane":
+                    if war_policy == "ARCANE":
                         percent = 57.5
-                    elif war_policy == "Tactician":
+                    elif war_policy == "TACTICIAN":
                         percent = 42.5
                     else:
                         percent = 50
@@ -148,11 +148,11 @@ class Spies(commands.Cog):
                     elif spies < 2:
                         spies = 0
                     modifier = 0
-                    if nations['war_policy'] == "Tactician":
+                    if war_policy == "TACTICIAN":
                         modifier += 1.15
-                    elif nations['war_policy'] == "Arcane":
+                    elif war_policy == "ARCANE":
                         modifier += 0.85
-                    elif nations['war_policy'] == "Covert":
+                    elif war_policy == "COVERT":
                         modifier += 1.15
                     odds = 3 * 25 + (int(spycount) * 100 / ((spies * 3) + 1)) * modifier
                     ass_tanks = odds / 1.5
