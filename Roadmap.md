@@ -11,7 +11,7 @@ Value {Simple, Advanced) {Done}
 Loot (Nation, Alliance)
 Raid (All, Safe, (Beige, All, Safe, Dnr) (Dnr, All, Safe))
 Damage (Missiles, Nukes) {Done}
-Spies (Odds, Total) {Partially Done}
+Spies (Odds, Total) {Done}
 
 # Optimal Code:
 
