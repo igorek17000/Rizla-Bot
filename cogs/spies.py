@@ -86,7 +86,82 @@ class Spies(commands.Cog):
 
     @spies.command()
     async def odds(self, ctx, arg):
-        await ctx.send('Wip')
+        await ctx.message.delete()
+        conn = sqlite3.connect('dbs/keystore.db')
+        cur = conn.cursor()
+        cur.execute(f'''SELECT owner_key FROM data WHERE guild_id = {ctx.guild.id}''')
+        key = cur.fetchall()[0]
+        api_key = str(key[0])
+        conn2 = sqlite3.connect('dbs/registered.db')
+        cur2 = conn2.cursor()
+        cur2.execute(f'''SELECT nation_id FROM data WHERE discord_id = {ctx.message.author.id}''')
+        your_id = str(cur2.fetchall()[0])
+        remove_this = "()'',"
+        for rt in remove_this:
+            your_id = your_id.replace(rt, "")
+        if key == 'None':
+            await ctx.send('Error parsing the api key, please contact Simons#7609 for solve the problem')
+        else:
+            query = f"""
+        {{
+         nations(id:{arg}){{
+          data{{
+           nation_name
+           id
+           war_policy
+           central_intelligence_agency
+          }}
+          }}
+          }}
+         """
+            r = requests.post(f"https://api.politicsandwar.com/graphql?api_key={api_key}", json={"query": query})
+            data = r.json()["data"]["nations"]["data"]
+            for nations in data:
+                nation_id = nations['id']
+                war_policy = nations['war_policy']
+                central_intelligence_agency = nations['central_intelligence_agency']
+                async with aiohttp.ClientSession() as session:
+                    if war_policy == "Arcane":
+                        percent = 57.5
+                    elif war_policy == "Tactician":
+                        percent = 42.5
+                    else:
+                        percent = 50
+                    upper_lim = 60
+                    lower_lim = 0
+                    while True:
+                        spycount = math.floor((upper_lim + lower_lim) / 2)
+                        async with session.get(
+                                f"https://politicsandwar.com/war/espionage_get_odds.php?id1={your_id}&id2={nation_id}&id3=0&id1=3&id5={spycount}") as probability:
+                            probability = await probability.text()
+                        if "Greater than 50%" in probability:
+                            upper_lim = spycount
+                        else:
+                            lower_lim = spycount
+                        if upper_lim - 1 == lower_lim:
+                            break
+                    spies = round((((100 * int(spycount)) / (percent - 25)) - 2) / 3)
+                    if spies > 60:
+                        spies = 60
+                    elif spies > 50 and not central_intelligence_agency:
+                        spies = 50
+                    elif spies < 2:
+                        spies = 0
+                    modifier = 0
+                    if nations['war_policy'] == "Tactician":
+                        modifier += 1.15
+                    elif nations['war_policy'] == "Arcane":
+                        modifier += 0.85
+                    elif nations['war_policy'] == "Covert":
+                        modifier += 1.15
+                    odds = 3 * 25 + (int(spycount) * 100 / ((spies * 3) + 1)) * modifier
+                    ass_tanks = odds / 1.5
+                    sab_aircraft = odds / 2
+                    sab_ships = odds / 3
+                    sab_missile = odds / 4
+                    sab_nuclear = odds / 5
+                    await ctx.send(
+                        f'You have {round(ass_tanks)}% chances to assasinate enemy spies.\nYou have {round(ass_tanks)}% chances to sabotage enemy tanks.\nYou have {round(sab_aircraft)}% chances to sabotage enemy aircraft.\nYou have {round(sab_ships)}% chances to sabotage enemy ships.\nYou have {round(sab_missile)}% chances to sabotage enemy missile.\nYou have {round(sab_nuclear)}% chances to sabotage enemy nuclear.\nThe chances are calculate using Extremely covert as paramether.')
 
 
 def setup(bot):
