@@ -89,8 +89,8 @@ class Value(commands.Cog):
             formula = (money * int(arg) + food * int(arg2) + aluminum * int(arg3) + steel * int(arg4) + munitions * int(
                 arg5) + gasoline * int(arg6) + bauxite * int(arg7) + iron * int(arg8) + lead * int(
                 arg9) + uranium * int(arg10) + oil * int(arg11) + coal * int(arg12) + credits * int(arg13))
-            total = round(int(formula) * 1.86)
-            loot = round(int(total) / 14)
+            total = round(int(formula) / 0.14)
+            loot = round(int(total - formula) / 14)
             await ctx.send(f'Value: ${formula:,}\nTotal Stored : ${total:,}\nEstimated Loot: ${loot:,}')
 
     @convert.error
@@ -150,10 +150,10 @@ class Value(commands.Cog):
             formula = (money * int(arg) + food * int(arg2) + aluminum * int(arg3) + steel * int(arg4) + munitions * int(
                 arg5) + gasoline * int(arg6) + bauxite * int(arg7) + iron * int(arg8) + lead * int(
                 arg9) + uranium * int(arg10) + oil * int(arg11) + coal * int(arg12) + credits * int(arg13))
-            total = round(int(formula) * 1.86)
-            loot = round(int(total) / 14)
+            total = round(int(formula) / 0.14)
+            loot = round(int(total - formula) / 14)
             await ctx.send(
-                f'```Money:${(format(int(arg), ","))} Food:{(format(int(arg2), ","))} Aluminum:{(format(int(arg3), ","))} Steel:{(format(int(arg4), ","))} Munitions:{(format(int(arg5), ","))} Gasoline:{(format(int(arg6), ","))} Bauxite:{(format(int(arg7), ","))} Iron:{(format(int(arg8), ","))} Lead:{(format(int(arg9), ","))} Uranium:{(format(int(arg10), ","))} Oil:{(format(int(arg11), ","))}  Coal:{(format(int(arg12), ","))} Credits:{arg13}``` Value: ${formula:,}\n\nTotal Stored : ```Money:${(format(round(int(arg) * 1.86), ","))} Food:{(format(round(int(arg2) * 1.86), ","))} Aluminum:{(format(round(int(arg3) * 1.86), ","))} Steel:{(format(round(int(arg4) * 1.86), ","))} Munitions:{(format(round(int(arg5) * 1.86), ","))} Gasoline:{(format(round(int(arg6) * 1.86), ","))} Bauxite:{(format(round(int(arg7) * 1.86), ","))} Iron:{(format(round(int(arg8) * 1.86), ","))} Lead:{(format(round(int(arg9) * 1.86), ","))} Uranium:{(format(round(int(arg10) * 1.86), ","))} Oil:{(format(round(int(arg11) * 1.86), ","))} Coal:{(format(round(int(arg12) * 1.86), ","))} Credits:{arg13}``` Value : ${total:,}\n\nYou can loot : ```Money:${(format(round(int(arg) * 1.86 / 14), ","))} Food:{(format(round(int(arg2) * 1.86 / 14), ","))} Aluminum:{(format(round(int(arg3) * 1.86 / 14), ","))} Steel:{(format(round(int(arg4) * 1.86 / 14), ","))} Munitions:{(format(round(int(arg5) * 1.86 / 14), ","))} Gasoline:{(format(round(int(arg6) * 1.86 / 14), ","))} Bauxite:{(format(round(int(arg7) * 1.86 / 14), ","))} Iron:{(format(round(int(arg8) * 1.86 / 14), ","))} Lead:{(format(round(int(arg9) * 1.86 / 14), ","))} Uranium:{(format(round(int(arg10) * 1.86 / 14), ","))} Oil:{(format(round(int(arg11) * 1.86 / 14), ","))} Coal::{(format(round(int(arg12) * 1.86 / 14), ","))} Credits:{arg13}``` Value : ${loot:,}')
+                f'```Money:${(format(int(arg), ","))} Food:{(format(int(arg2), ","))} Aluminum:{(format(int(arg3), ","))} Steel:{(format(int(arg4), ","))} Munitions:{(format(int(arg5), ","))} Gasoline:{(format(int(arg6), ","))} Bauxite:{(format(int(arg7), ","))} Iron:{(format(int(arg8), ","))} Lead:{(format(int(arg9), ","))} Uranium:{(format(int(arg10), ","))} Oil:{(format(int(arg11), ","))} Coal:{(format(int(arg12), ","))} Credits:{arg13}``` Value: ${formula:,}\n\nTotal Stored : ```Money:${(format(round(int(arg) / 0.14), ","))} Food:{(format(round(int(arg2) / 0.14), ","))} Aluminum:{(format(round(int(arg3) / 0.14), ","))} Steel:{(format(round(int(arg4) / 0.14), ","))} Munitions:{(format(round(int(arg5) / 0.14), ","))} Gasoline:{(format(round(int(arg6) / 0.14), ","))} Bauxite:{(format(round(int(arg7) / 0.14), ","))} Iron:{(format(round(int(arg8) / 0.14), ","))} Lead:{(format(round(int(arg9) / 0.14), ","))} Uranium:{(format(round(int(arg10) / 0.14), ","))} Oil:{(format(round(int(arg11)/ 0.14), ","))} Coal:{(format(round(int(arg12) / 0.14), ","))} Credits:{arg13}``` Value : ${total:,}\n\nYou can loot : ```Money:${(format(round(int(arg) / 0.14 / 14), ","))} Food:{(format(round(int(arg2) / 0.14 / 14), ","))} Aluminum:{(format(round(int(arg3) / 0.14 / 14), ","))} Steel:{(format(round(int(arg4) / 0.14 / 14), ","))} Munitions:{(format(round(int(arg5) / 0.14 / 14), ","))} Gasoline:{(format(round(int(arg6) / 0.14 / 14), ","))} Bauxite:{(format(round(int(arg7) / 0.14 / 14), ","))} Iron:{(format(round(int(arg8) / 0.14 / 14), ","))} Lead:{(format(round(int(arg9) / 0.14 / 14), ","))} Uranium:{(format(round(int(arg10) / 0.14 / 14), ","))} Oil:{(format(round(int(arg11) / 0.14 / 14), ","))} Coal::{(format(round(int(arg12) / 0.14 / 14), ","))} Credits:{arg13}``` Value : ${loot:,}')
 
     @rss.error
     async def rss_error(self, ctx, error):
