@@ -33,7 +33,7 @@ class Spies(commands.Cog):
         cur.execute(f'''SELECT owner_key FROM data WHERE guild_id = {ctx.guild.id}''')
         key = cur.fetchall()[0]
         api_key = str(key[0])
-        if key == 'None':
+        if key is None:
             await ctx.send('Error parsing the api key, please contact Simons#7609 for solve the problem')
         else:
             query = f"""
@@ -99,7 +99,7 @@ class Spies(commands.Cog):
         remove_this = "()'',"
         for rt in remove_this:
             your_id = your_id.replace(rt, "")
-        if key == 'None':
+        if key is None:
             await ctx.send('Error parsing the api key, please contact Simons#7609 for solve the problem')
         else:
             query = f"""
