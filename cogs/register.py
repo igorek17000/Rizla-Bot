@@ -41,7 +41,7 @@ class Register(commands.Cog):
         cur2.execute(f'''SELECT nation_id FROM data WHERE discord_id = {ctx.message.author.id}''')
         output = cur2.fetchall()
         nation = str(output)
-        if key == 'None':
+        if key is None:
             await ctx.send('Error parsing the api key, please contact Simons#7609 for solve the problem')
         elif arg in nation:
             await ctx.send('This nation is already registered.')
@@ -171,7 +171,7 @@ class Register(commands.Cog):
         cur2.execute(f'''SELECT nation_id FROM data WHERE discord_id = {member.id}''')
         output = cur2.fetchall()
         nation = str(output)
-        if key == 'None':
+        if key is None:
             await ctx.message.delete()
             await ctx.send('Error parsing the api key, please contact Simons#7609 for solve the problem.')
         elif arg in nation:
