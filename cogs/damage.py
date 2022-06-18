@@ -41,7 +41,7 @@ class Damage(commands.Cog):
             score = score.replace(rt, "")
         maxscore = float(score) * 1.75
         minscore = float(score) * 0.75
-        if key == 'None':
+        if key is None:
             await ctx.send('Error parsing the api key, please contact Simons#7609 for solve the problem')
         else:
             await ctx.send('Please wait...')
@@ -120,7 +120,7 @@ class Damage(commands.Cog):
             score = score.replace(rt, "")
         maxscore = float(score) * 1.75
         minscore = float(score) * 0.75
-        if key == 'None':
+        if key is None:
             await ctx.send('Error parsing the api key, please contact Simons#7609 for solve the problem')
         else:
             await ctx.send('Please wait...')
