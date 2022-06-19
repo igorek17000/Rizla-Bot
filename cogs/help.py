@@ -16,7 +16,7 @@ class Menu(commands.Cog):
         embed.add_field(name='-sync', value='Sync your nation information.', inline=True)
         embed.add_field(name='-fastbeige <resistance>', value='Display the best way for beige a enemy.', inline=True)
         embed.add_field(name='-remind', value='Display remind commands information.', inline=True)
-        embed.add_field(name='-spies',value='Display spies commands information.', inline=True)
+        embed.add_field(name='-spies', value='Display spies commands information.', inline=True)
         embed.add_field(name='-value', value='Display value commands information.', inline=True)
         embed.add_field(name='-loot', value='Display loot commands information.', inline=True)
         embed.add_field(name='-raid', value='Display raid commands information.', inline=True)
@@ -26,7 +26,7 @@ class Menu(commands.Cog):
     @help.error
     async def help_error(self, ctx, error):
         if isinstance(error, commands.CommandError):
-            await ctx.send(f'{error}')
+            await ctx.send(f'The bot encountered the following error : {error}')
 
 
 def setup(bot):
