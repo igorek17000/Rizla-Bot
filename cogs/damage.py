@@ -1,7 +1,6 @@
-import sqlite3
-
 import discord
 import requests
+import sqlite3
 from discord.ext import commands
 
 
@@ -22,7 +21,7 @@ class Damage(commands.Cog):
     @damage.error
     async def damage_error(self, ctx, error):
         if isinstance(error, commands.CommandError):
-            await ctx.send(f'{error}')
+            await ctx.send(f'The bot encountered the following error : {error}')
 
     @damage.command()
     async def missile(self, ctx, arg):
@@ -32,8 +31,16 @@ class Damage(commands.Cog):
         cur.execute(f'''SELECT owner_key FROM data WHERE guild_id = {ctx.guild.id}''')
         key = cur.fetchall()[0]
         api_key = str(key[0])
+        cur.execute(f'''SELECT commands_role FROM data WHERE guild_id = {ctx.guild.id}''')
+        get_role = cur.fetchall()[0]
+        role = ctx.message.guild.get_role(int(get_role[0]))
+        cur.execute(f'''SELECT commands_channel FROM data WHERE guild_id = {ctx.guild.id}''')
+        get_channel = cur.fetchall()[0]
+        channel = str(get_channel[0])
         conn2 = sqlite3.connect('dbs/registered.db')
         cur2 = conn2.cursor()
+        cur2.execute(f'''SELECT discord_id FROM data WHERE discord_id = {ctx.message.author.id}''')
+        discord_id = cur2.fetchall()
         cur2.execute(f'''SELECT score FROM data WHERE discord_id = {ctx.message.author.id}''')
         score = str(cur2.fetchall()[0])
         remove_this = "()'',"
@@ -41,8 +48,12 @@ class Damage(commands.Cog):
             score = score.replace(rt, "")
         maxscore = float(score) * 1.75
         minscore = float(score) * 0.75
-        if key is None:
-            await ctx.send('Error parsing the api key, please contact Simons#7609 for solve the problem')
+        if discord_id is None:
+            await ctx.send('You are not registered.')
+        elif role not in ctx.author.roles:
+            await ctx.send(f'You do not have the role : {role}')
+        elif str(ctx.channel.id) != channel:
+            await ctx.send(f'Please run the command in <#{channel}>')
         else:
             await ctx.send('Please wait...')
             query = f"""
@@ -99,20 +110,27 @@ class Damage(commands.Cog):
     @missile.error
     async def missile_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send(f'{error}')
+            await ctx.send('Invalid alliange id.')
         elif isinstance(error, commands.CommandError):
-            await ctx.send(f'{error}')
+            await ctx.send(f'The bot encountered the following error : {error}')
 
     @damage.command()
     async def nuke(self, ctx, arg):
-        await ctx.message.delete()
         conn = sqlite3.connect('dbs/keystore.db')
         cur = conn.cursor()
         cur.execute(f'''SELECT owner_key FROM data WHERE guild_id = {ctx.guild.id}''')
         key = cur.fetchall()[0]
         api_key = str(key[0])
+        cur.execute(f'''SELECT commands_role FROM data WHERE guild_id = {ctx.guild.id}''')
+        get_role = cur.fetchall()[0]
+        role = ctx.message.guild.get_role(int(get_role[0]))
+        cur.execute(f'''SELECT commands_channel FROM data WHERE guild_id = {ctx.guild.id}''')
+        get_channel = cur.fetchall()[0]
+        channel = str(get_channel[0])
         conn2 = sqlite3.connect('dbs/registered.db')
         cur2 = conn2.cursor()
+        cur2.execute(f'''SELECT discord_id FROM data WHERE discord_id = {ctx.message.author.id}''')
+        discord_id = cur2.fetchall()
         cur2.execute(f'''SELECT score FROM data WHERE discord_id = {ctx.message.author.id}''')
         score = str(cur2.fetchall()[0])
         remove_this = "()'',"
@@ -120,8 +138,12 @@ class Damage(commands.Cog):
             score = score.replace(rt, "")
         maxscore = float(score) * 1.75
         minscore = float(score) * 0.75
-        if key is None:
-            await ctx.send('Error parsing the api key, please contact Simons#7609 for solve the problem')
+        if discord_id is None:
+            await ctx.send('You are not registered.')
+        elif role not in ctx.author.roles:
+            await ctx.send(f'You do not have the role : {role}')
+        elif str(ctx.channel.id) != channel:
+            await ctx.send(f'Please run the command in <#{channel}>')
         else:
             await ctx.send('Please wait...')
             query = f"""
@@ -179,9 +201,9 @@ class Damage(commands.Cog):
     @nuke.error
     async def nuke_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send(f'{error}')
+            await ctx.send('Invalid alliance id.')
         elif isinstance(error, commands.CommandError):
-            await ctx.send(f'{error}')
+            await ctx.send(f'The bot encountered the following error : {error}')
 
 
 def setup(bot):
