@@ -1,7 +1,6 @@
-import sqlite3
-
 import discord
 import requests
+import sqlite3
 from discord.ext import commands
 
 
@@ -24,7 +23,7 @@ class Value(commands.Cog):
     @value.error
     async def convert_error(self, ctx, error):
         if isinstance(error, commands.CommandError):
-            await ctx.send(f'{error}')
+            await ctx.send(f'The bot encountered the following error : {error}')
 
     @value.command()
     async def help(self, ctx):
@@ -47,8 +46,22 @@ class Value(commands.Cog):
         cur.execute(f'''SELECT owner_key FROM data WHERE guild_id = {ctx.guild.id}''')
         key = cur.fetchall()[0]
         api_key = str(key[0])
-        if key is None:
-            await ctx.send('Error parsing the api key, please contact Simons#7609 for solve the problem')
+        cur.execute(f'''SELECT commands_role FROM data WHERE guild_id = {ctx.guild.id}''')
+        get_role = cur.fetchall()[0]
+        role = ctx.message.guild.get_role(int(get_role[0]))
+        cur.execute(f'''SELECT commands_channel FROM data WHERE guild_id = {ctx.guild.id}''')
+        get_channel = cur.fetchall()[0]
+        channel = str(get_channel[0])
+        conn2 = sqlite3.connect('dbs/registered.db')
+        cur2 = conn2.cursor()
+        cur2.execute(f'''SELECT discord_id FROM data WHERE discord_id = {ctx.message.author.id}''')
+        discord_id = cur2.fetchall()
+        if discord_id is None:
+            await ctx.send('You are not registered.')
+        elif role not in ctx.author.roles:
+            await ctx.send(f'You do not have the role : {role}')
+        elif str(ctx.channel.id) != channel:
+            await ctx.send(f'Please run the command in <#{channel}>')
         else:
             query = f"""
 {{
@@ -96,9 +109,9 @@ class Value(commands.Cog):
     @convert.error
     async def convert_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send(f'{error}')
+            await ctx.send('Invalid format.')
         elif isinstance(error, commands.CommandError):
-            await ctx.send(f'{error}')
+            await ctx.send(f'The bot encountered the following error : {error}')
 
     @value.command()
     async def rss(self, ctx, arg, arg2=None, arg3=None, arg4=None, arg5=None, arg6=None, arg7=None, arg8=None,
@@ -108,8 +121,22 @@ class Value(commands.Cog):
         cur.execute(f'''SELECT owner_key FROM data WHERE guild_id = {ctx.guild.id}''')
         key = cur.fetchall()[0]
         api_key = str(key[0])
-        if key is None:
-            await ctx.send('Error parsing the api key, please contact Simons#7609 for solve the problem')
+        cur.execute(f'''SELECT commands_role FROM data WHERE guild_id = {ctx.guild.id}''')
+        get_role = cur.fetchall()[0]
+        role = ctx.message.guild.get_role(int(get_role[0]))
+        cur.execute(f'''SELECT commands_channel FROM data WHERE guild_id = {ctx.guild.id}''')
+        get_channel = cur.fetchall()[0]
+        channel = str(get_channel[0])
+        conn2 = sqlite3.connect('dbs/registered.db')
+        cur2 = conn2.cursor()
+        cur2.execute(f'''SELECT discord_id FROM data WHERE discord_id = {ctx.message.author.id}''')
+        discord_id = cur2.fetchall()
+        if discord_id is None:
+            await ctx.send('You are not registered.')
+        elif role not in ctx.author.roles:
+            await ctx.send(f'You do not have the role : {role}')
+        elif str(ctx.channel.id) != channel:
+            await ctx.send(f'Please run the command in <#{channel}>')
         else:
             query = f"""
 {{
@@ -153,14 +180,14 @@ class Value(commands.Cog):
             total = round(int(formula) / 0.14)
             loot = round(int(total - formula) / 14)
             await ctx.send(
-                f'```Money:${(format(int(arg), ","))} Food:{(format(int(arg2), ","))} Aluminum:{(format(int(arg3), ","))} Steel:{(format(int(arg4), ","))} Munitions:{(format(int(arg5), ","))} Gasoline:{(format(int(arg6), ","))} Bauxite:{(format(int(arg7), ","))} Iron:{(format(int(arg8), ","))} Lead:{(format(int(arg9), ","))} Uranium:{(format(int(arg10), ","))} Oil:{(format(int(arg11), ","))} Coal:{(format(int(arg12), ","))} Credits:{arg13}``` Value: ${formula:,}\n\nTotal Stored : ```Money:${(format(round(int(arg) / 0.14), ","))} Food:{(format(round(int(arg2) / 0.14), ","))} Aluminum:{(format(round(int(arg3) / 0.14), ","))} Steel:{(format(round(int(arg4) / 0.14), ","))} Munitions:{(format(round(int(arg5) / 0.14), ","))} Gasoline:{(format(round(int(arg6) / 0.14), ","))} Bauxite:{(format(round(int(arg7) / 0.14), ","))} Iron:{(format(round(int(arg8) / 0.14), ","))} Lead:{(format(round(int(arg9) / 0.14), ","))} Uranium:{(format(round(int(arg10) / 0.14), ","))} Oil:{(format(round(int(arg11)/ 0.14), ","))} Coal:{(format(round(int(arg12) / 0.14), ","))} Credits:{arg13}``` Value : ${total:,}\n\nYou can loot : ```Money:${(format(round(int(arg) / 0.14 / 14), ","))} Food:{(format(round(int(arg2) / 0.14 / 14), ","))} Aluminum:{(format(round(int(arg3) / 0.14 / 14), ","))} Steel:{(format(round(int(arg4) / 0.14 / 14), ","))} Munitions:{(format(round(int(arg5) / 0.14 / 14), ","))} Gasoline:{(format(round(int(arg6) / 0.14 / 14), ","))} Bauxite:{(format(round(int(arg7) / 0.14 / 14), ","))} Iron:{(format(round(int(arg8) / 0.14 / 14), ","))} Lead:{(format(round(int(arg9) / 0.14 / 14), ","))} Uranium:{(format(round(int(arg10) / 0.14 / 14), ","))} Oil:{(format(round(int(arg11) / 0.14 / 14), ","))} Coal::{(format(round(int(arg12) / 0.14 / 14), ","))} Credits:{arg13}``` Value : ${loot:,}')
+                f'```Money:${(format(int(arg), ","))} Food:{(format(int(arg2), ","))} Aluminum:{(format(int(arg3), ","))} Steel:{(format(int(arg4), ","))} Munitions:{(format(int(arg5), ","))} Gasoline:{(format(int(arg6), ","))} Bauxite:{(format(int(arg7), ","))} Iron:{(format(int(arg8), ","))} Lead:{(format(int(arg9), ","))} Uranium:{(format(int(arg10), ","))} Oil:{(format(int(arg11), ","))} Coal:{(format(int(arg12), ","))} Credits:{arg13}``` Value: ${formula:,}\n\nTotal Stored : ```Money:${(format(round(int(arg) / 0.14), ","))} Food:{(format(round(int(arg2) / 0.14), ","))} Aluminum:{(format(round(int(arg3) / 0.14), ","))} Steel:{(format(round(int(arg4) / 0.14), ","))} Munitions:{(format(round(int(arg5) / 0.14), ","))} Gasoline:{(format(round(int(arg6) / 0.14), ","))} Bauxite:{(format(round(int(arg7) / 0.14), ","))} Iron:{(format(round(int(arg8) / 0.14), ","))} Lead:{(format(round(int(arg9) / 0.14), ","))} Uranium:{(format(round(int(arg10) / 0.14), ","))} Oil:{(format(round(int(arg11) / 0.14), ","))} Coal:{(format(round(int(arg12) / 0.14), ","))} Credits:{arg13}``` Value : ${total:,}\n\nYou can loot : ```Money:${(format(round(int(arg) / 0.14 / 14), ","))} Food:{(format(round(int(arg2) / 0.14 / 14), ","))} Aluminum:{(format(round(int(arg3) / 0.14 / 14), ","))} Steel:{(format(round(int(arg4) / 0.14 / 14), ","))} Munitions:{(format(round(int(arg5) / 0.14 / 14), ","))} Gasoline:{(format(round(int(arg6) / 0.14 / 14), ","))} Bauxite:{(format(round(int(arg7) / 0.14 / 14), ","))} Iron:{(format(round(int(arg8) / 0.14 / 14), ","))} Lead:{(format(round(int(arg9) / 0.14 / 14), ","))} Uranium:{(format(round(int(arg10) / 0.14 / 14), ","))} Oil:{(format(round(int(arg11) / 0.14 / 14), ","))} Coal::{(format(round(int(arg12) / 0.14 / 14), ","))} Credits:{arg13}``` Value : ${loot:,}')
 
     @rss.error
     async def rss_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send(f'{error}')
+            await ctx.send('Invalid format.')
         elif isinstance(error, commands.CommandError):
-            await ctx.send(f'{error}')
+            await ctx.send(f'The bot encountered the following error : {error}')
 
 
 def setup(bot):
