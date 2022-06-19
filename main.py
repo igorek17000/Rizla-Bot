@@ -51,7 +51,7 @@ async def reload_error(ctx, error):
         await ctx.send(embed=embed)
     elif isinstance(error, commands.CommandError):
         await ctx.message.delete()
-        await ctx.send(f'{error}')
+        await ctx.send(f'The bot encountered the following error : {error}')
 
 
 bot.run('') #Use your own bot token.
