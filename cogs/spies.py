@@ -1,9 +1,8 @@
-import math
-import sqlite3
-
 import aiohttp
 import discord
+import math
 import requests
+import sqlite3
 from discord.ext import commands
 
 
@@ -23,7 +22,7 @@ class Spies(commands.Cog):
     @spies.error
     async def spies_error(self, ctx, error):
         if isinstance(error, commands.CommandError):
-            await ctx.send(f'{error}')
+            await ctx.send(f'The bot encountered the following error : {error}')
 
     @spies.command()
     async def amount(self, ctx, arg):
@@ -33,8 +32,22 @@ class Spies(commands.Cog):
         cur.execute(f'''SELECT owner_key FROM data WHERE guild_id = {ctx.guild.id}''')
         key = cur.fetchall()[0]
         api_key = str(key[0])
-        if key is None:
-            await ctx.send('Error parsing the api key, please contact Simons#7609 for solve the problem')
+        cur.execute(f'''SELECT commands_role FROM data WHERE guild_id = {ctx.guild.id}''')
+        get_role = cur.fetchall()[0]
+        role = ctx.message.guild.get_role(int(get_role[0]))
+        cur.execute(f'''SELECT commands_channel FROM data WHERE guild_id = {ctx.guild.id}''')
+        get_channel = cur.fetchall()[0]
+        channel = str(get_channel[0])
+        conn2 = sqlite3.connect('dbs/registered.db')
+        cur2 = conn2.cursor()
+        cur2.execute(f'''SELECT discord_id FROM data WHERE discord_id = {ctx.message.author.id}''')
+        discord_id = cur2.fetchall()
+        if discord_id is None:
+            await ctx.send('You are not registered.')
+        elif role not in ctx.author.roles:
+            await ctx.send(f'You do not have the role : {role}')
+        elif str(ctx.channel.id) != channel:
+            await ctx.send(f'Please run the command in <#{channel}>')
         else:
             query = f"""
   {{
@@ -84,6 +97,13 @@ class Spies(commands.Cog):
                         spies = 0
                 await ctx.send(f'{nation_name} have {spies} spies.')
 
+    @amount.error
+    async def amount_error(self, ctx, error):
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send('Invalid nation id.')
+        elif isinstance(error, commands.CommandError):
+            await ctx.send(f'The bot encountered the following error : {error}')
+
     @spies.command()
     async def odds(self, ctx, arg):
         await ctx.message.delete()
@@ -92,15 +112,27 @@ class Spies(commands.Cog):
         cur.execute(f'''SELECT owner_key FROM data WHERE guild_id = {ctx.guild.id}''')
         key = cur.fetchall()[0]
         api_key = str(key[0])
+        cur.execute(f'''SELECT commands_role FROM data WHERE guild_id = {ctx.guild.id}''')
+        get_role = cur.fetchall()[0]
+        role = ctx.message.guild.get_role(int(get_role[0]))
+        cur.execute(f'''SELECT commands_channel FROM data WHERE guild_id = {ctx.guild.id}''')
+        get_channel = cur.fetchall()[0]
+        channel = str(get_channel[0])
         conn2 = sqlite3.connect('dbs/registered.db')
         cur2 = conn2.cursor()
+        cur2.execute(f'''SELECT discord_id FROM data WHERE discord_id = {ctx.message.author.id}''')
+        discord_id = cur2.fetchall()
         cur2.execute(f'''SELECT nation_id FROM data WHERE discord_id = {ctx.message.author.id}''')
         your_id = str(cur2.fetchall()[0])
         remove_this = "()'',"
         for rt in remove_this:
             your_id = your_id.replace(rt, "")
-        if key is None:
-            await ctx.send('Error parsing the api key, please contact Simons#7609 for solve the problem')
+        if discord_id is None:
+            await ctx.send('You are not registered.')
+        elif role not in ctx.author.roles:
+            await ctx.send(f'You do not have the role : {role}')
+        elif str(ctx.channel.id) != channel:
+            await ctx.send(f'Please run the command in <#{channel}>')
         else:
             query = f"""
         {{
@@ -162,6 +194,13 @@ class Spies(commands.Cog):
                     sab_nuclear = odds / 5
                     await ctx.send(
                         f'You have {round(ass_tanks)}% chances to assasinate enemy spies.\nYou have {round(ass_tanks)}% chances to sabotage enemy tanks.\nYou have {round(sab_aircraft)}% chances to sabotage enemy aircraft.\nYou have {round(sab_ships)}% chances to sabotage enemy ships.\nYou have {round(sab_missile)}% chances to sabotage enemy missile.\nYou have {round(sab_nuclear)}% chances to sabotage enemy nuclear.\nThe chances are calculate using Extremely covert as paramether.')
+
+    @odds.error
+    async def odds_error(self, ctx, error):
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send('Invalid nation id.')
+        elif isinstance(error, commands.CommandError):
+            await ctx.send(f'The bot encountered the following error : {error}')
 
 
 def setup(bot):
