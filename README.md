@@ -8,6 +8,10 @@ Rizla can be hosted everywhere! just make sure to set-up your projects like this
 
 Also make sure to create correctly the databases with your data.
 
+# What are you doing now?
+
+I'm working on rewriting the entire bot.
+
 # What about the future
 
 I will keep developing bot for better performance and up-dating along with new commands.!
