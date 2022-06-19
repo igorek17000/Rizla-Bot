@@ -83,9 +83,9 @@ class Damage(commands.Cog):
             r = requests.post(f"https://api.politicsandwar.com/graphql?api_key={api_key}", json={"query": query})
             data = r.json()["data"]["nations"]["data"]
             for nations in data:
-                aapos = nations['alliance_position']
+                alliance_position = nations['alliance_position']
                 color = nations['color']
-                vacmode = nations['vacation_mode_turns']
+                vacation_mode = nations['vacation_mode_turns']
                 city = sorted(nations['cities'], key=lambda x: x['infrastructure'], reverse=True)[0]
                 infrastructure = city['infrastructure']
                 land = city['land']
@@ -94,18 +94,18 @@ class Damage(commands.Cog):
                     f"https://politicsandwar.com/city/estimate_infra_land_cost.php?q1={str(infrastructure)}&q2={str(formula)}").text
                 nations['r'] = float(r.replace(",", ""))
             data = sorted(data, key=lambda x: x['r'], reverse=True)
-            output = 0
-            n = 0
-            targets = ""
-            while output < 20 and n < len(data):
-                nat_name = data[n]['nation_name']
-                nat_link = f'https://politicsandwar.com/nation/id={data[n]["id"]}'
+            targets_count = 0
+            index = 0
+            targets_list = ""
+            while targets_count < 20 and index < len(data):
+                nation_name = data[n]['nation_name']
+                nation_link = f'https://politicsandwar.com/nation/id={data[n]["id"]}'
                 r = data[n]['r']
-                if aapos != 'APPLICANT' and color != 'beige' and vacmode == 0:
-                    targets += f'[{nat_name}]({nat_link}) - Estimated Damage : ${r:,}\n'
-                    output += 1
-                n += 1
-        if targets == '':
+                if alliance_position != 'APPLICANT' and color != 'beige' and vacation_mode == 0:
+                    targets_list += f'[{nation_name}]({nation_link}) - Estimated Damage : ${r:,}\n'
+                    targets_count += 1
+                index += 1
+        if targets_list == '':
             await ctx.send('No targets has been found')
         else:
             embed = discord.Embed(title="Missile Damage Targets", description=targets,
@@ -179,9 +179,9 @@ class Damage(commands.Cog):
             r = requests.post(f"https://api.politicsandwar.com/graphql?api_key={api_key}", json={"query": query})
             data = r.json()["data"]["nations"]["data"]
             for nations in data:
-                aapos = nations['alliance_position']
+                alliance_position = nations['alliance_position']
                 color = nations['color']
-                vacmode = nations['vacation_mode_turns']
+                vacation_mode = nations['vacation_mode_turns']
                 city = sorted(nations['cities'], key=lambda x: x['infrastructure'], reverse=True)[0]
                 infrastructure = city['infrastructure']
                 land = city['land']
@@ -191,18 +191,18 @@ class Damage(commands.Cog):
                     f"https://politicsandwar.com/city/estimate_infra_land_cost.php?q1={str(infrastructure)}&q2={str(formula)}").text
                 nations['r'] = float(r.replace(",", ""))
             data = sorted(data, key=lambda x: x['r'], reverse=True)
-            output = 0
-            n = 0
-            targets = ""
-            while output < 20 and n < len(data):
-                nat_name = data[n]['nation_name']
-                nat_link = f'https://politicsandwar.com/nation/id={data[n]["id"]}'
+            targets_count = 0
+            index = 0
+            targets_list = ""
+            while targets_count < 20 and index < len(data):
+                nation_name = data[n]['nation_name']
+                nation_link = f'https://politicsandwar.com/nation/id={data[n]["id"]}'
                 r = data[n]['r']
-                if aapos != 'APPLICANT' and color != 'beige' and vacmode == 0:
-                    targets += f'[{nat_name}]({nat_link}) - Estimated Damage : ${r:,}\n'
-                    output += 1
-                n += 1
-        if targets == '':
+                if alliance_position != 'APPLICANT' and color != 'beige' and vacation_mode == 0:
+                    targets_list += f'[{nat_name}]({nat_link}) - Estimated Damage : ${r:,}\n'
+                    targets_count += 1
+                index += 1
+        if targets_list == '':
             await ctx.send('No targets has been found')
         else:
             embed = discord.Embed(title="Nuke Damage Targets", description=targets,
