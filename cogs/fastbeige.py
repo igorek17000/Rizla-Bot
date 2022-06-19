@@ -1,6 +1,6 @@
-from itertools import *
-
+import sqlite3
 from discord.ext import commands
+from itertools import *
 
 
 class Fastbeige(commands.Cog):
@@ -10,7 +10,25 @@ class Fastbeige(commands.Cog):
     @commands.command()
     async def fastbeige(self, ctx, arg):
         await ctx.message.delete()
-        if int(arg) > 100:
+        conn = sqlite3.connect('dbs/keystore.db')
+        cur = conn.cursor()
+        cur.execute(f'''SELECT commands_role FROM data WHERE guild_id = {ctx.guild.id}''')
+        get_role = cur.fetchall()[0]
+        role = ctx.message.guild.get_role(int(get_role[0]))
+        cur.execute(f'''SELECT commands_channel FROM data WHERE guild_id = {ctx.guild.id}''')
+        get_channel = cur.fetchall()[0]
+        channel = str(get_channel[0])
+        conn2 = sqlite3.connect('dbs/registered.db')
+        cur2 = conn2.cursor()
+        cur2.execute(f'''SELECT discord_id FROM data WHERE discord_id = {ctx.message.author.id}''')
+        discord_id = cur2.fetchall()
+        if discord_id is None:
+            await ctx.send('You are not registered.')
+        elif role not in ctx.author.roles:
+            await ctx.send(f'You do not have the role : {role}')
+        elif str(ctx.channel.id) != channel:
+            await ctx.send(f'Please run the command in <#{channel}>')
+        elif int(arg) > 100:
             await ctx.send('Insert a value between 1 to 100.')
         elif int(arg) <= 0:
             await ctx.send('Insert a value between 1 to 100.')
@@ -34,9 +52,9 @@ class Fastbeige(commands.Cog):
     @fastbeige.error
     async def fastbeige_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send(f'{error}')
+            await ctx.send(f'Invalid resistance.')
         elif isinstance(error, commands.CommandError):
-            await ctx.send(f'{error}')
+            await ctx.send(f'The bot encountered the following error : {error}')
 
 
 def setup(bot):
