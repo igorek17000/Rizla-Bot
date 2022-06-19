@@ -42,7 +42,7 @@ class Listener(commands.Cog):
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.CommandNotFound):
             await ctx.message.delete()
-            await ctx.send(f'{error}')
+            await ctx.send(f'The bot encountered the following error: {error}')
 
 
 def setup(bot):
