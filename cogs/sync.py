@@ -110,12 +110,12 @@ class Sync(commands.Cog):
             conn2.commit()
             cur2.close()
             conn2.close()
-            await ctx.send(f'Your nation {natname} has been synced with the new data.')
+            await ctx.send(f'{natname} Has been updated.')
 
     @sync.error
     async def sync_error(self, ctx, error):
         if isinstance(error, commands.CommandError):
-            await ctx.send(f'{error}')
+            await ctx.send(f'The bot encountered the following error : {error}')
 
 
 def setup(bot):
